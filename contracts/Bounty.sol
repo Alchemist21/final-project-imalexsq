@@ -2,7 +2,7 @@ pragma solidity ^ 0.5 .0;
 
 import 'installed_contracts/zeppelin/contracts/math/SafeMath.sol';
 
-contract Bounty is SafeMath {
+contract Bounty {
     using SafeMath for uint;
     
     address public owner;
@@ -10,7 +10,6 @@ contract Bounty is SafeMath {
     uint public answerCount;
 
     constructor() payable public {
-        require(msg.value != 0, "Send some money");
         owner = msg.sender;
         questionCount = 0;
         answerCount = 0;
@@ -125,7 +124,9 @@ contract Bounty is SafeMath {
 
         // award bounty to proposer
         allQuestions[allAnswers[_id].questionId].bountyAmount = 0;
-        address(allAnswers[_id].proposer).transfer(bountyAmount);
+        uint fee = (bountyAmount  * 10) / 100;
+        uint amount = bountyAmount - fee;
+        address(allAnswers[_id].proposer).transfer(amount);
 
         return id;
     }
