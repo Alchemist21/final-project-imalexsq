@@ -43,7 +43,8 @@ server.post('/addQuestion', (req, res) => {
 
 server.get('/allQuestions', (req, res) => {
   Question.find({}, function(err, questions) {
-    res.json({ questions });
+    res.set('Content-Type', 'application/json');
+    res.send(questions);
   });
 });
 
