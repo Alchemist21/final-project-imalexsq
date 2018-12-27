@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import BountyContract from './contracts/Bounty.json';
 import getWeb3 from './utils/getWeb3';
+import axios from 'axios';
 
 import './App.css';
 
@@ -11,7 +12,7 @@ class App extends Component {
     contract: null,
     qHeading: '',
     qDesc: '',
-    bountyAmount: ''
+    bAmount: ''
   };
 
   componentDidMount = async () => {
@@ -46,39 +47,46 @@ class App extends Component {
   };
 
   handleQuestionSubmit = async () => {
-    const {
-      accounts,
-      contract,
-      qHeading,
-      qDesc,
-      bountyAmount,
-      web3
-    } = this.state;
+    const { accounts, contract, qHeading, qDesc, bAmount, web3 } = this.state;
 
     let tx = await contract.methods.addQuestion(qHeading, qDesc).send({
       from: accounts[0],
-      value: web3.utils.toWei(bountyAmount)
+      value: web3.utils.toWei(bAmount)
     });
     this.setState({
       qHeading: '',
       qDesc: '',
-      bountyAmount: ''
+      bAmount: ''
     });
 
     let qId = tx.events.questionAdded.returnValues.questionCount;
     console.log(qId);
 
     const result = await contract.methods.getQuestion(qId).call();
+    const {
+      bountyAmount,
+      description,
+      funder,
+      heading,
+      id,
+      submitDate,
+      winner
+    } = result;
 
-    console.log(
-      result.bountyAmount,
-      result.description,
-      result.funder,
-      result.heading,
-      result.id,
-      result.submitDate,
-      result.winner
-    );
+    axios
+      .post('http://127.0.0.1:8080/addQuestion', {
+        bountyAmount,
+        description,
+        funder,
+        heading,
+        id,
+        submitDate,
+        winner
+      })
+      .then(res => {
+        console.log(res.data);
+      })
+      .catch(e => console.log(e));
   };
 
   render() {
@@ -108,8 +116,8 @@ class App extends Component {
         <br />
         <input
           type="number"
-          name="bountyAmount"
-          value={this.state.bountyAmount}
+          name="bAmount"
+          value={this.state.bAmount}
           placeholder="Bounty Amount in Ether"
           onChange={this.handleChange}
         />
