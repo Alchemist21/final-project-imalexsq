@@ -38,7 +38,13 @@ server.post('/addQuestion', (req, res) => {
     }
   );
 
-  res.send('OK');
+  res.sendStatus(204);
+});
+
+server.get('/allQuestions', (req, res) => {
+  Question.find({}, function(err, questions) {
+    res.json({ questions });
+  });
 });
 
 server.listen(8080, () => console.log('Listening on port 8080!'));
