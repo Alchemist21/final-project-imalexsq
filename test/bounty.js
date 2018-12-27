@@ -9,7 +9,7 @@ contract('Bounty', function(accounts) {
   var id;
   const bountyAmount = '100';
 
-  it('should add a question', async () => {
+  it('should add a first question', async () => {
     const bounty = await Bounty.deployed();
 
     var eventEmitted = false;
@@ -22,7 +22,7 @@ contract('Bounty', function(accounts) {
     });
 
     if (tx.logs[0].event === 'questionAdded') {
-      id = tx.logs[0].args.id.toString(10);
+      id = tx.logs[0].args.questionCount.toString(10);
       eventEmitted = true;
     }
 
@@ -36,6 +36,35 @@ contract('Bounty', function(accounts) {
       'adding a question should emit a questionAdded event'
     );
     assert.equal(result[5], billy, 'question submitted by billy');
+  });
+
+  it('should add a second question', async () => {
+    const bounty = await Bounty.deployed();
+
+    var eventEmitted = false;
+    const heading = 'Billy Gibbons';
+    const description = 'When was Billy Gibbons born?';
+
+    const tx = await bounty.addQuestion(heading, description, {
+      from: frank,
+      value: bountyAmount
+    });
+
+    if (tx.logs[0].event === 'questionAdded') {
+      secId = tx.logs[0].args.questionCount.toString(10);
+      eventEmitted = true;
+    }
+
+    const result = await bounty.getQuestion.call(secId);
+    assert.equal(secId, 1, 'contract assigns correct id');
+    assert.equal(result[1], heading, 'question heading should match');
+    assert.equal(result[4], bountyAmount, 'wei send to contract as a bounty');
+    assert.equal(
+      eventEmitted,
+      true,
+      'adding a question should emit a questionAdded event'
+    );
+    assert.equal(result[5], frank, 'question submitted by frank');
   });
 
   it('should add an answer to an existing question', async () => {
@@ -132,12 +161,16 @@ contract('Bounty', function(accounts) {
     );
   });
 
-  it('should show 10% added to contract balance', async () => {
+  it('should show 10% added to contract balance + 2nd question bounty', async () => {
     const bounty = await Bounty.deployed();
 
     const result = await bounty.getContractBalance();
 
-    assert.equal(result.words[0], (bountyAmount * 10) / 100, 'keeps 10%');
+    assert.equal(
+      result.words[0],
+      100 + (bountyAmount * 10) / 100,
+      'keeps 10% + 2nd question bounty'
+    );
   });
 });
 
