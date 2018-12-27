@@ -38,7 +38,7 @@ contract Bounty {
         address payable proposer;
     }
 
-    event questionAdded(uint id);
+    event questionAdded(uint questionCount);
     event answerAdded(uint id);
     event answerAccepted(uint id);
     event answerRejected(uint id);
@@ -46,7 +46,9 @@ contract Bounty {
     function addQuestion(string memory _heading, string memory _description)
     public
     payable
-    returns(uint id) {
+    returns(
+        bool
+    ) {
         require(msg.value != 0, "Add a bounty amount");
         require(msg.sender != owner, 'Cannot be owner');
 
@@ -60,9 +62,9 @@ contract Bounty {
             funder: msg.sender,
             winner: address(0)
         });
+        emit questionAdded(questionCount);
         questionCount += 1;
-        emit questionAdded(id);
-        return id;
+        return true;
     }
 
     function addAnswer(uint _questionId, string memory _description) public returns(uint id) {
