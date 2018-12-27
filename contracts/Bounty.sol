@@ -38,12 +38,19 @@ contract Bounty {
         address payable proposer;
     }
 
+    event questionAdded(uint id);
+    event answerAdded(uint id);
+    event answerAccepted(uint id);
+    event answerRejected(uint id);
+
     function addQuestion(string memory _heading, string memory _description)
     public
     payable
     returns(uint id) {
         require(msg.value != 0, "Add a bounty amount");
-        
+        require(msg.sender != owner, 'Cannot be owner');
+
+
         allQuestions[questionCount] = Question({
             id: questionCount,
             heading: _heading,
@@ -54,6 +61,7 @@ contract Bounty {
             winner: address(0)
         });
         questionCount += 1;
+        emit questionAdded(id);
         return id;
     }
 
@@ -68,6 +76,7 @@ contract Bounty {
             proposer: msg.sender
         });
         answerCount += 1;
+        emit answerAdded(id);
         return id;
     }
 
@@ -85,7 +94,7 @@ contract Bounty {
         bountyAmount = allQuestions[_id].bountyAmount;
         funder = allQuestions[_id].funder;
         winner = allQuestions[_id].winner;
-        return (id, heading, description, submitDate, bountyAmount, owner, winner);
+        return (id, heading, description, submitDate, bountyAmount, funder, winner);
     }
 
     function getAnswer(uint _id) public view returns(
@@ -105,7 +114,7 @@ contract Bounty {
         rejected = allAnswers[_id].rejected;
         proposer = allAnswers[_id].proposer;
 
-        return (id, questionId, description, submitDate, accepted, rejected, owner);
+        return (id, questionId, description, submitDate, accepted, rejected, proposer);
     }
 
     function acceptAnswer(uint _id) public returns(
@@ -127,12 +136,13 @@ contract Bounty {
         uint fee = (bountyAmount  * 10) / 100;
         uint amount = bountyAmount - fee;
         address(allAnswers[_id].proposer).transfer(amount);
-
+        emit answerAccepted(id);
         return id;
     }
 
     function rejectAnswer(uint _id) public returns(bool) {
         allAnswers[_id].rejected = true;
+        emit answerRejected(_id);
         return true;
     }
 
