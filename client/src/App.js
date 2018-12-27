@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import BountyContract from './contracts/Bounty.json';
 import getWeb3 from './utils/getWeb3';
-import truffleContract from 'truffle-contract';
 
 import './App.css';
 
