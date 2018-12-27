@@ -93,6 +93,7 @@ contract Bounty {
         id = allQuestions[_id].id;
         heading = allQuestions[_id].heading;
         description = allQuestions[_id].description;
+        submitDate = allQuestions[_id].submitDate;
         bountyAmount = allQuestions[_id].bountyAmount;
         funder = allQuestions[_id].funder;
         winner = allQuestions[_id].winner;
