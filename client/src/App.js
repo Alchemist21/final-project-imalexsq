@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import BountyContract from './contracts/Bounty.json';
 import getWeb3 from './utils/getWeb3';
 import axios from 'axios';
+import ListQuestions from './components/ListQuestions';
 
 import './App.css';
 
@@ -94,39 +95,44 @@ class App extends Component {
       return <div>Loading Web3, accounts, and contract...</div>;
     }
     return (
-      <div className="App">
-        <h1>Cuora</h1>
-        <p>Crypto Quora</p>
-        <h2>Add a question</h2>
-        <input
-          type="text"
-          name="qHeading"
-          value={this.state.qHeading}
-          placeholder="Question Heading"
-          onChange={this.handleChange}
-        />
-        <br />
-        <input
-          type="text"
-          name="qDesc"
-          value={this.state.qDesc}
-          placeholder="Question Description"
-          onChange={this.handleChange}
-        />
-        <br />
-        <input
-          type="number"
-          name="bAmount"
-          value={this.state.bAmount}
-          placeholder="Bounty Amount in Ether"
-          onChange={this.handleChange}
-        />
-        <br />
-        <input
-          type="button"
-          value="Submit Question"
-          onClick={this.handleQuestionSubmit}
-        />
+      <div className="container">
+        <div className="row">
+          <div className="col-lg pt-3">
+            <h1>Cuora</h1>
+            <p>Crypto Quora</p>
+            <ListQuestions />
+            <h2>Add a question</h2>
+            <input
+              type="text"
+              name="qHeading"
+              value={this.state.qHeading}
+              placeholder="Question Heading"
+              onChange={this.handleChange}
+            />
+            <br />
+            <input
+              type="text"
+              name="qDesc"
+              value={this.state.qDesc}
+              placeholder="Question Description"
+              onChange={this.handleChange}
+            />
+            <br />
+            <input
+              type="number"
+              name="bAmount"
+              value={this.state.bAmount}
+              placeholder="Bounty Amount in Ether"
+              onChange={this.handleChange}
+            />
+            <br />
+            <input
+              type="button"
+              value="Submit Question"
+              onClick={this.handleQuestionSubmit}
+            />
+          </div>
+        </div>
       </div>
     );
   }
