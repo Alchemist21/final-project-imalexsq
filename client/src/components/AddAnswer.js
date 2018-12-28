@@ -14,19 +14,17 @@ export default class AddAnswer extends React.Component {
     this.setState({ [name]: value });
   };
 
-  handleAnswerSubmit = () => {
+  handleAnswerSubmit = async () => {
     const { aDesc } = this.state;
     const { contract, account, qId } = this.props;
 
-    // let tx = await contract.methods
-    //   .addAnswer(this.props.questionId, aDesc)
-    //   .send({ from: this.props.account });
-    // console.log(tx);
+    await contract.methods.addAnswer(qId, aDesc).send({ from: account });
 
     axios
       .post('http://127.0.0.1:8080/addAnswer', {
         qId,
-        aDesc
+        aDesc,
+        account
       })
       .then(res => {
         console.log(res.data);

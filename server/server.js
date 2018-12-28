@@ -42,9 +42,9 @@ server.post('/addQuestion', (req, res) => {
 });
 
 server.post('/addAnswer', (req, res) => {
-  const { aDesc, qId } = req.body;
+  const { aDesc, qId, account } = req.body;
 
-  Answer.create({ qId, aDesc }, function(err, res) {
+  Answer.create({ qId, aDesc, account }, function(err, res) {
     console.log(err, res);
   });
 

@@ -12,7 +12,8 @@ const QuestionSchema = mongoose.Schema({
 
 const AnswerSchema = mongoose.Schema({
   qId: String,
-  aDesc: String
+  aDesc: String,
+  account: String
 });
 
 const Question = mongoose.model('question', QuestionSchema);

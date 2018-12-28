@@ -28,7 +28,7 @@ export default class GetAnswers extends React.Component {
         {answers.map(answer => {
           return (
             <li key={Math.random()} className="list-group-item">
-              {answer.aDesc}
+              {answer.aDesc} by {answer.account}
             </li>
           );
         })}
