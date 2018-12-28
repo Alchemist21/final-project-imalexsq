@@ -18,11 +18,16 @@ export default class AddAnswer extends React.Component {
     const { aDesc } = this.state;
     const { contract, account, qId } = this.props;
 
-    await contract.methods.addAnswer(qId, aDesc).send({ from: account });
+    let tx = await contract.methods
+      .addAnswer(qId, aDesc)
+      .send({ from: account });
+    console.log(tx);
+    let aId = tx.events.answerAdded.returnValues.id;
 
     axios
       .post('http://127.0.0.1:8080/addAnswer', {
         qId,
+        aId,
         aDesc,
         account
       })

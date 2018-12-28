@@ -12,6 +12,7 @@ const QuestionSchema = mongoose.Schema({
 
 const AnswerSchema = mongoose.Schema({
   qId: String,
+  aId: String,
   aDesc: String,
   submitDate: String,
   accepted: Boolean,

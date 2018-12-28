@@ -14,8 +14,10 @@ export default class ListQuestions extends React.Component {
     axios
       .get('http://127.0.0.1:8080/allQuestions')
       .then(res => {
-        const header = Object.keys(res.data[0]);
-        this.setState({ questions: res.data, header });
+        if (res.data.length !== 0) {
+          const header = Object.keys(res.data[0]);
+          this.setState({ questions: res.data, header });
+        }
       })
       .catch(err => console.log(err));
   };
@@ -38,7 +40,11 @@ export default class ListQuestions extends React.Component {
                 </p>
               </div>
               <ul className="list-group list-group-flush">
-                <GetAnswers qId={question.id} />
+                <GetAnswers
+                  qId={question.id}
+                  account={this.props.accounts[0]}
+                  contract={this.props.contract}
+                />
               </ul>
               <div className="card-body">
                 <AddAnswer

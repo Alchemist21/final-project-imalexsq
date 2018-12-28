@@ -28,7 +28,14 @@ export default class GetAnswers extends React.Component {
         {answers.map(answer => {
           return (
             <li key={Math.random()} className="list-group-item">
-              {answer.aDesc} by {answer.account} | <ActionButtons />
+              {answer.aDesc} by {answer.account} |{' '}
+              {answer.accepted ? null : (
+                <ActionButtons
+                  aId={answer.aId}
+                  account={this.props.account}
+                  contract={this.props.contract}
+                />
+              )}
             </li>
           );
         })}

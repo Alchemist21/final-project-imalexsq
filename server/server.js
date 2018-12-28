@@ -42,9 +42,9 @@ server.post('/addQuestion', (req, res) => {
 });
 
 server.post('/addAnswer', (req, res) => {
-  const { aDesc, qId, account } = req.body;
+  const { aDesc, qId, aId, account } = req.body;
 
-  Answer.create({ qId, aDesc, account }, function(err, res) {
+  Answer.create({ qId, aId, aDesc, account }, function(err, res) {
     console.log(err, res);
   });
 
@@ -61,8 +61,23 @@ server.post('/getAnswers', (req, res) => {
   });
 });
 
+server.post('/acceptAnswer', (req, res) => {
+  const { aId } = req.body;
+
+  Answer.findOneAndUpdate({ aId }, { accepted: true }, function(err, result) {
+    if (err) {
+      res.sendStatus(422);
+    }
+    res.set('Content-Type', 'application/json');
+    res.send(result);
+  });
+});
+
 server.get('/allQuestions', (req, res) => {
   Question.find({}, function(err, questions) {
+    if (err) {
+      console.log(err);
+    }
     res.set('Content-Type', 'application/json');
     res.send(questions);
   });
