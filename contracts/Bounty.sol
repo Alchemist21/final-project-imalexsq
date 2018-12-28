@@ -34,14 +34,16 @@ contract Bounty {
         string description;
         uint submitDate;
         bool accepted;
-        bool rejected;
         address payable proposer;
     }
 
     event questionAdded(uint questionCount);
     event answerAdded(uint id);
     event answerAccepted(uint id);
-    event answerRejected(uint id);
+
+    modifier isQuestionFunder(uint _id) {
+        require(msg.sender == allQuestions[allAnswers[_id].questionId].funder, "Not question funder");_;
+    }
 
     function addQuestion(string memory _heading, string memory _description)
     public
@@ -67,19 +69,18 @@ contract Bounty {
         return true;
     }
 
-    function addAnswer(uint _questionId, string memory _description) public returns(uint id) {
+    function addAnswer(uint _questionId, string memory _description) public returns(bool) {
         allAnswers[answerCount] = Answer({
             id: answerCount,
             questionId: _questionId,
             description: _description,
             submitDate: now,
             accepted: false,
-            rejected: false,
             proposer: msg.sender
         });
+        emit answerAdded(answerCount);
         answerCount += 1;
-        emit answerAdded(id);
-        return id;
+        return true;
     }
 
     function getQuestion(uint _id) public view returns(
@@ -106,7 +107,6 @@ contract Bounty {
         string memory description,
         uint submitDate,
         bool accepted,
-        bool rejected,
         address proposer
     ) {
         id = allAnswers[_id].id;
@@ -114,16 +114,14 @@ contract Bounty {
         description = allAnswers[_id].description;
         submitDate = allAnswers[_id].submitDate;
         accepted = allAnswers[_id].accepted;
-        rejected = allAnswers[_id].rejected;
         proposer = allAnswers[_id].proposer;
 
-        return (id, questionId, description, submitDate, accepted, rejected, proposer);
+        return (id, questionId, description, submitDate, accepted, proposer);
     }
 
-    function acceptAnswer(uint _id) public returns(
+    function acceptAnswer(uint _id) isQuestionFunder(_id) public returns(
         uint id) {
-        
-        require(msg.sender == allQuestions[allAnswers[_id].questionId].funder, "Not question funder");    
+        require(allAnswers[_id].accepted = false, "Answer already accepted") ;
         
         // flip answer to true
         allAnswers[_id].accepted = true;
@@ -141,12 +139,6 @@ contract Bounty {
         address(allAnswers[_id].proposer).transfer(amount);
         emit answerAccepted(id);
         return id;
-    }
-
-    function rejectAnswer(uint _id) public returns(bool) {
-        allAnswers[_id].rejected = true;
-        emit answerRejected(_id);
-        return true;
     }
 
     function getContractBalance() public view returns(uint) {
