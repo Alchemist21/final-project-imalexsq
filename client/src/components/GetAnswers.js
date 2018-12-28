@@ -1,6 +1,6 @@
 import React from 'react';
 import axios from 'axios';
-
+import ActionButtons from './ActionButtons';
 export default class GetAnswers extends React.Component {
   constructor(props) {
     super(props);
@@ -28,7 +28,7 @@ export default class GetAnswers extends React.Component {
         {answers.map(answer => {
           return (
             <li key={Math.random()} className="list-group-item">
-              {answer.aDesc} by {answer.account}
+              {answer.aDesc} by {answer.account} | <ActionButtons />
             </li>
           );
         })}
