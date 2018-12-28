@@ -94,13 +94,15 @@ class App extends Component {
     if (!this.state.web3) {
       return <div>Loading Web3, accounts, and contract...</div>;
     }
+    const { accounts, contract } = this.state;
+
     return (
       <div className="container">
         <div className="row">
           <div className="col-lg pt-3">
             <h1>Cuora</h1>
             <p>Crypto Quora</p>
-            <ListQuestions />
+            <ListQuestions accounts={accounts} contract={contract} />
             <h2>Add a question</h2>
             <input
               type="text"

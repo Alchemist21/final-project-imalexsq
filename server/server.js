@@ -10,7 +10,7 @@ server.use(cors());
 const mongodb_conn_module = require('./mongodbConnModule');
 var db = mongodb_conn_module.connect();
 
-const { Question } = require('./Models');
+const { Question, Answer } = require('./Models');
 
 server.post('/addQuestion', (req, res) => {
   const {
@@ -39,6 +39,26 @@ server.post('/addQuestion', (req, res) => {
   );
 
   res.sendStatus(204);
+});
+
+server.post('/addAnswer', (req, res) => {
+  const { aDesc, qId } = req.body;
+
+  Answer.create({ qId, aDesc }, function(err, res) {
+    console.log(err, res);
+  });
+
+  res.send('OK');
+});
+
+server.post('/getAnswers', (req, res) => {
+  const { qId } = req.body;
+
+  Answer.find({ qId }, function(err, result) {
+    res.set('Content-Type', 'application/json');
+
+    res.send(result);
+  });
 });
 
 server.get('/allQuestions', (req, res) => {
