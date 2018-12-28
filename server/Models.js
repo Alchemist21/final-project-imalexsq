@@ -13,6 +13,9 @@ const QuestionSchema = mongoose.Schema({
 const AnswerSchema = mongoose.Schema({
   qId: String,
   aDesc: String,
+  submitDate: String,
+  accepted: Boolean,
+  rejected: Boolean,
   account: String
 });
 
