@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import BountyContract from './contracts/Bounty.json';
 import getWeb3 from './utils/getWeb3';
-import axios from 'axios';
 import ListQuestions from './components/ListQuestions';
+import AddQuestion from './components/AddQuestion';
 
 import './App.css';
 
@@ -10,10 +10,7 @@ class App extends Component {
   state = {
     web3: null,
     accounts: null,
-    contract: null,
-    qHeading: '',
-    qDesc: '',
-    bAmount: ''
+    contract: null
   };
 
   componentDidMount = async () => {
@@ -42,59 +39,11 @@ class App extends Component {
     }
   };
 
-  handleChange = e => {
-    const { name, value } = e.target;
-    this.setState({ [name]: value });
-  };
-
-  handleQuestionSubmit = async () => {
-    const { accounts, contract, qHeading, qDesc, bAmount, web3 } = this.state;
-
-    let tx = await contract.methods.addQuestion(qHeading, qDesc).send({
-      from: accounts[0],
-      value: web3.utils.toWei(bAmount)
-    });
-    this.setState({
-      qHeading: '',
-      qDesc: '',
-      bAmount: ''
-    });
-
-    let qId = tx.events.questionAdded.returnValues.questionCount;
-    console.log(qId);
-
-    const result = await contract.methods.getQuestion(qId).call();
-    const {
-      bountyAmount,
-      description,
-      funder,
-      heading,
-      id,
-      submitDate,
-      winner
-    } = result;
-
-    axios
-      .post('http://127.0.0.1:8080/addQuestion', {
-        bountyAmount,
-        description,
-        funder,
-        heading,
-        id,
-        submitDate,
-        winner
-      })
-      .then(res => {
-        console.log(res.data);
-      })
-      .catch(e => console.log(e));
-  };
-
   render() {
     if (!this.state.web3) {
       return <div>Loading Web3, accounts, and contract...</div>;
     }
-    const { accounts, contract } = this.state;
+    const { accounts, contract, web3 } = this.state;
 
     return (
       <div className="container">
@@ -103,35 +52,10 @@ class App extends Component {
             <h1>Cuora</h1>
             <p>Crypto Quora</p>
             <ListQuestions accounts={accounts} contract={contract} />
-            <h2>Add a question</h2>
-            <input
-              type="text"
-              name="qHeading"
-              value={this.state.qHeading}
-              placeholder="Question Heading"
-              onChange={this.handleChange}
-            />
-            <br />
-            <input
-              type="text"
-              name="qDesc"
-              value={this.state.qDesc}
-              placeholder="Question Description"
-              onChange={this.handleChange}
-            />
-            <br />
-            <input
-              type="number"
-              name="bAmount"
-              value={this.state.bAmount}
-              placeholder="Bounty Amount in Ether"
-              onChange={this.handleChange}
-            />
-            <br />
-            <input
-              type="button"
-              value="Submit Question"
-              onClick={this.handleQuestionSubmit}
+            <AddQuestion
+              account={accounts[0]}
+              contract={contract}
+              utils={web3.utils}
             />
           </div>
         </div>
