@@ -121,7 +121,7 @@ contract Bounty {
 
     function acceptAnswer(uint _id) isQuestionFunder(_id) public returns(
         uint id) {
-        require(allAnswers[_id].accepted = false, "Answer already accepted") ;
+        require(allAnswers[_id].accepted != true, "Answer already accepted") ;
         
         // flip answer to true
         allAnswers[_id].accepted = true;

@@ -21,7 +21,6 @@ export default class AddAnswer extends React.Component {
     let tx = await contract.methods
       .addAnswer(qId, aDesc)
       .send({ from: account });
-    console.log(tx);
     let aId = tx.events.answerAdded.returnValues.id;
 
     axios
