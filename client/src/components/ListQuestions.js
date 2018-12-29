@@ -24,6 +24,8 @@ export default class ListQuestions extends React.Component {
 
   render() {
     const { questions } = this.state;
+    const { utils } = this.props;
+
     return (
       <React.Fragment>
         {questions.map(question => {
@@ -36,7 +38,7 @@ export default class ListQuestions extends React.Component {
                 <p className="card-text">Submitted: {String(time)}</p>
                 <p className="card-text">By: {question.funder}</p>
                 <p className="card-text">
-                  Bounty Amount: {question.bountyAmount} Ether
+                  Bounty Amount: {utils.fromWei(question.bountyAmount)} Ether
                 </p>
               </div>
               <ul className="list-group list-group-flush">

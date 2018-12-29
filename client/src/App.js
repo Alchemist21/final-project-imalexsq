@@ -51,7 +51,11 @@ class App extends Component {
           <div className="col-lg pt-3">
             <h1>Cuora</h1>
             <p>Crypto Quora</p>
-            <ListQuestions accounts={accounts} contract={contract} />
+            <ListQuestions
+              accounts={accounts}
+              contract={contract}
+              utils={web3.utils}
+            />
             <AddQuestion
               account={accounts[0]}
               contract={contract}
