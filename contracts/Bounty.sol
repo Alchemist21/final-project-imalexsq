@@ -39,7 +39,7 @@ contract Bounty {
 
     event questionAdded(uint questionCount);
     event answerAdded(uint id);
-    event answerAccepted(uint id);
+    event answerAccepted(address winner);
 
     modifier isQuestionFunder(uint _id) {
         require(msg.sender == allQuestions[allAnswers[_id].questionId].funder, "Not question funder");_;
@@ -120,9 +120,10 @@ contract Bounty {
     }
 
     function acceptAnswer(uint _id) isQuestionFunder(_id) public returns(
-        uint id) {
+        bool) {
         require(allAnswers[_id].accepted != true, "Answer already accepted") ;
-        
+        require( allQuestions[allAnswers[_id].questionId].winner == address(0), "Question has been answered");
+
         // flip answer to true
         allAnswers[_id].accepted = true;
 
@@ -137,8 +138,8 @@ contract Bounty {
         uint fee = (bountyAmount  * 10) / 100;
         uint amount = bountyAmount - fee;
         address(allAnswers[_id].proposer).transfer(amount);
-        emit answerAccepted(id);
-        return id;
+        emit answerAccepted(allAnswers[_id].proposer);
+        return true;
     }
 
     function getContractBalance() public view returns(uint) {
