@@ -30,7 +30,7 @@ export default class GetAnswers extends React.Component {
           return (
             <li key={Math.random()} className="list-group-item">
               {answer.aDesc} by {answer.account} |{' '}
-              {answer.accepted ? null : (
+              {answer.closed ? null : (
                 <ActionButtons
                   qId={this.props.qId}
                   aId={answer.aId}

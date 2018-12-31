@@ -40,6 +40,7 @@ export default class ListQuestions extends React.Component {
                 <p className="card-text">
                   Bounty Amount: {utils.fromWei(question.bountyAmount)} Ether
                 </p>
+                <p className="card-text">Winner: {question.winner}</p>
               </div>
               <ul className="list-group list-group-flush">
                 <GetAnswers
@@ -48,13 +49,15 @@ export default class ListQuestions extends React.Component {
                   contract={this.props.contract}
                 />
               </ul>
-              <div className="card-body">
-                <AddAnswer
-                  qId={question.id}
-                  account={this.props.accounts[0]}
-                  contract={this.props.contract}
-                />
-              </div>
+              {question.closed ? null : (
+                <div className="card-body">
+                  <AddAnswer
+                    qId={question.id}
+                    account={this.props.accounts[0]}
+                    contract={this.props.contract}
+                  />
+                </div>
+              )}
             </div>
           );
         })}

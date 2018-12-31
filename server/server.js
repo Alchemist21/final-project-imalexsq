@@ -31,7 +31,8 @@ server.post('/addQuestion', (req, res) => {
       heading,
       id,
       submitDate,
-      winner
+      winner,
+      closed: false
     },
     function(err) {
       console.log(err);
@@ -64,13 +65,15 @@ server.post('/getAnswers', (req, res) => {
 server.post('/acceptAnswer', (req, res) => {
   const { aId, qId, winner } = req.body;
 
-  Question.findOneAndUpdate({ qId }, { winner }, function(err) {
+  Question.findOneAndUpdate({ id: qId }, { winner, closed: true }, function(
+    err
+  ) {
     if (err) {
       console.log(err);
     }
   });
 
-  Answer.findOneAndUpdate({ aId }, { accepted: true }, function(err, result) {
+  Answer.updateMany({ qId }, { closed: true }, function(err, result) {
     if (err) {
       res.sendStatus(422);
     }

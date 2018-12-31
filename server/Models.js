@@ -7,7 +7,8 @@ const QuestionSchema = mongoose.Schema({
   heading: String,
   id: String,
   submitDate: String,
-  winner: String
+  winner: String,
+  closed: Boolean
 });
 
 const AnswerSchema = mongoose.Schema({
@@ -15,7 +16,7 @@ const AnswerSchema = mongoose.Schema({
   aId: String,
   aDesc: String,
   submitDate: String,
-  accepted: Boolean,
+  closed: Boolean,
   account: String
 });
 
