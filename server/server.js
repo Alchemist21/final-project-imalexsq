@@ -62,7 +62,13 @@ server.post('/getAnswers', (req, res) => {
 });
 
 server.post('/acceptAnswer', (req, res) => {
-  const { aId } = req.body;
+  const { aId, qId, winner } = req.body;
+
+  Question.findOneAndUpdate({ qId }, { winner }, function(err) {
+    if (err) {
+      console.log(err);
+    }
+  });
 
   Answer.findOneAndUpdate({ aId }, { accepted: true }, function(err, result) {
     if (err) {
