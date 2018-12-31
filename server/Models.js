@@ -16,7 +16,6 @@ const AnswerSchema = mongoose.Schema({
   aDesc: String,
   submitDate: String,
   accepted: Boolean,
-  rejected: Boolean,
   account: String
 });
 
