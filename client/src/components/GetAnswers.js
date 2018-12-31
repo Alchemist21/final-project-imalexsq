@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import ActionButtons from './ActionButtons';
+
 export default class GetAnswers extends React.Component {
   constructor(props) {
     super(props);
@@ -31,6 +32,7 @@ export default class GetAnswers extends React.Component {
               {answer.aDesc} by {answer.account} |{' '}
               {answer.accepted ? null : (
                 <ActionButtons
+                  qId={this.props.qId}
                   aId={answer.aId}
                   account={this.props.account}
                   contract={this.props.contract}

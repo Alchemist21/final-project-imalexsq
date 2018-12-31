@@ -10,15 +10,20 @@ export default class ActionButtons extends React.Component {
   }
 
   handleAnswerAccept = async e => {
-    const { aId, contract, account } = this.props;
+    const { aId, qId, contract, account } = this.props;
 
-    await contract.methods.acceptAnswer(aId).send({
+    let tx = await contract.methods.acceptAnswer(aId).send({
       from: account
     });
 
+    let winner = tx.events.answerAccepted.returnValues.winner;
+    console.log(winner);
+
     axios
       .post('http://127.0.0.1:8080/acceptAnswer', {
-        aId
+        aId,
+        qId,
+        winner
       })
       .then(res => {
         this.setState({ disabled: true });
