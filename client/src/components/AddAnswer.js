@@ -23,12 +23,17 @@ export default class AddAnswer extends React.Component {
       .send({ from: account });
     let aId = tx.events.answerAdded.returnValues.id;
 
+    const result = await contract.methods.getAnswer(aId).call();
+    const { accepted, description, proposer, submitDate } = result;
+
     axios
       .post('http://127.0.0.1:8080/addAnswer', {
         qId,
         aId,
-        aDesc,
-        account
+        aDesc: description,
+        account: proposer,
+        submitDate,
+        closed: accepted
       })
       .then(res => {
         console.log(res.data);
