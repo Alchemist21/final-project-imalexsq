@@ -1,11 +1,13 @@
 pragma solidity ^ 0.5 .0;
 
-import 'installed_contracts/zeppelin/contracts/math/SafeMath.sol';
+import './SafeMath.sol';
 
 contract Bounty {
     using SafeMath for uint;
     
-    address public owner;
+    bool private stopped = false;
+    address private owner;
+    
     uint public questionCount;
     uint public answerCount;
 
@@ -45,7 +47,22 @@ contract Bounty {
         require(msg.sender == allQuestions[allAnswers[_id].questionId].funder, "Not question funder");_;
     }
 
+    modifier isAdmin() {
+        require(msg.sender == owner);
+        _;
+    }
+
+    function toggleContractActive() isAdmin public {
+        stopped = !stopped;
+    }
+
+    
+    modifier stopInEmergency { if (!stopped) _; }
+    modifier onlyInEmergency { if (stopped) _; }
+
+
     function addQuestion(string memory _heading, string memory _description)
+    stopInEmergency
     public
     payable
     returns(
@@ -69,7 +86,7 @@ contract Bounty {
         return true;
     }
 
-    function addAnswer(uint _questionId, string memory _description) public returns(bool) {
+    function addAnswer(uint _questionId, string memory _description) stopInEmergency public returns(bool) {
         allAnswers[answerCount] = Answer({
             id: answerCount,
             questionId: _questionId,
@@ -119,11 +136,11 @@ contract Bounty {
         return (id, questionId, description, submitDate, accepted, proposer);
     }
 
-    function acceptAnswer(uint _id) isQuestionFunder(_id) public returns(
+    function acceptAnswer(uint _id) isQuestionFunder(_id) stopInEmergency public returns(
         bool) {
-        require(allAnswers[_id].accepted != true, "Answer already accepted") ;
-        require( allQuestions[allAnswers[_id].questionId].winner == address(0), "Question has been answered");
-
+        require(allAnswers[_id].accepted != true, "Answer already accepted");
+        require(allQuestions[allAnswers[_id].questionId].winner == address(0), "Question has been answered");
+        
         // flip answer to true
         allAnswers[_id].accepted = true;
 
@@ -145,5 +162,9 @@ contract Bounty {
     function getContractBalance() public view returns(uint) {
         return address(this).balance;
     }
+    
+    // function withdraw() onlyInEmergency public {
+    //     address(owner).transfer(address(this).balance);
+    // }
 
 }
