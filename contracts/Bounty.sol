@@ -1,6 +1,6 @@
 pragma solidity ^ 0.5 .0;
 
-import './SafeMath.sol';
+import 'installed_contracts/zeppelin/contracts/math/SafeMath.sol';
 
 contract Bounty {
     using SafeMath for uint;
