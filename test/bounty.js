@@ -87,7 +87,7 @@ contract('Bounty', function(accounts) {
       'adding a question should emit a answerAdded event'
     );
     assert.equal(result[2], description, 'answer should match');
-    assert.equal(result[6], dusty, 'answer submitted by dusty');
+    assert.equal(result[5], dusty, 'answer submitted by dusty');
   });
 
   it('should add a second answer', async () => {
@@ -111,26 +111,7 @@ contract('Bounty', function(accounts) {
       'adding a question should emit a answerAdded event'
     );
     assert.equal(result[2], description, 'answer should match');
-    assert.equal(result[6], frank, 'answer submitted by frank');
-  });
-
-  it('should reject the 2nd answer', async () => {
-    const bounty = await Bounty.deployed();
-
-    var eventEmitted = false;
-
-    const tx = await bounty.rejectAnswer(1);
-    if (tx.logs[0].event === 'answerRejected') {
-      eventEmitted = true;
-    }
-    const result = await bounty.getAnswer.call(1);
-
-    assert.equal(
-      eventEmitted,
-      true,
-      'rejecting a question should emit a answerRejected event'
-    );
-    assert.equal(result[5], true, 'answer is rejected');
+    assert.equal(result[5], frank, 'answer submitted by frank');
   });
 
   it('should accept the 1st answer', async () => {
@@ -152,7 +133,7 @@ contract('Bounty', function(accounts) {
       true,
       'accepting a question should emit an answerAccepted event'
     );
-    assert.equal(result[6], dusty, 'dusty gets awarded the bounty');
+    assert.equal(result[5], dusty, 'dusty gets awarded the bounty');
     assert.equal(result[4], true, 'answer is accepted');
     assert.equal(
       parseInt(dustyBalanceAfter),
@@ -173,5 +154,3 @@ contract('Bounty', function(accounts) {
     );
   });
 });
-
-// get contract balance
