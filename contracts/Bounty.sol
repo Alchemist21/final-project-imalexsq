@@ -201,8 +201,8 @@ contract Bounty {
         return address(this).balance;
     }
     
-    /// @notice in emergency send any contract balance to contract owner
-    function withdraw() onlyInEmergency public {
+    /// @notice in emergency send any contract balance to contract owner, can be called only by contract owner
+    function withdraw() isAdmin onlyInEmergency public {
         address(owner).transfer(address(this).balance);
     }
 
