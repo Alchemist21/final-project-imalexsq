@@ -10,7 +10,7 @@ contract Bounty {
     
     /// @notice set up circuit breaker design pattern
     bool private stopped = false;
-    address private owner;
+    address payable private owner;
     
     uint public questionCount;
     uint public answerCount;
@@ -205,8 +205,9 @@ contract Bounty {
         return address(this).balance;
     }
     
-    // function withdraw() onlyInEmergency public {
-    //     address(owner).transfer(address(this).balance);
-    // }
+    /// @notice in emergency send any contract balance to contract owner
+    function withdraw() onlyInEmergency public {
+        address(owner).transfer(address(this).balance);
+    }
 
 }
