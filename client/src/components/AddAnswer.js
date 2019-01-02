@@ -5,7 +5,8 @@ export default class AddAnswer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      aDesc: ''
+      aDesc: '',
+      success: ''
     };
   }
 
@@ -40,7 +41,7 @@ export default class AddAnswer extends React.Component {
       })
       .catch(err => console.log(err));
 
-    this.setState({ aDesc: '' });
+    this.setState({ aDesc: '', success: 'Answer Added!' });
   };
 
   render() {
@@ -66,6 +67,8 @@ export default class AddAnswer extends React.Component {
             </button>
           </div>
         </div>
+        <br />
+        {this.state.success}
       </React.Fragment>
     );
   }

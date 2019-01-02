@@ -5,7 +5,8 @@ export default class AddQuestion extends React.Component {
   state = {
     qHeading: '',
     qDesc: '',
-    bAmount: ''
+    bAmount: '',
+    success: ''
   };
 
   handleChange = e => {
@@ -25,7 +26,8 @@ export default class AddQuestion extends React.Component {
     this.setState({
       qHeading: '',
       qDesc: '',
-      bAmount: ''
+      bAmount: '',
+      success: 'Question Added!'
     });
 
     let qId = tx.events.questionAdded.returnValues.questionCount;
@@ -105,6 +107,8 @@ export default class AddQuestion extends React.Component {
             type="button"
             value="Submit Question"
           />
+          <br />
+          {this.state.success}
         </div>
       </React.Fragment>
     );

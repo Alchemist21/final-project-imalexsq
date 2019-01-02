@@ -5,7 +5,8 @@ export default class ActionButtons extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      disabled: false
+      disabled: false,
+      success: ''
     };
   }
 
@@ -26,7 +27,7 @@ export default class ActionButtons extends React.Component {
         winner
       })
       .then(res => {
-        this.setState({ disabled: true });
+        this.setState({ disabled: true, success: 'Winning answer selected!' });
       })
       .catch(e => console.log(e));
   };
@@ -44,6 +45,8 @@ export default class ActionButtons extends React.Component {
           disabled={disabled}
           onClick={this.handleAnswerAccept}
         />
+        <br />
+        {this.state.success}
       </React.Fragment>
     );
   }
