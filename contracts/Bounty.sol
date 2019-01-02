@@ -1,12 +1,8 @@
 pragma solidity ^ 0.5 .0;
 
-import 'installed_contracts/zeppelin/contracts/math/SafeMath.sol';
-
-
 /** @title Q&A bounties */
 
 contract Bounty {
-    using SafeMath for uint;
     
     /// @notice set up circuit breaker design pattern
     bool private stopped = false;
