@@ -1,9 +1,12 @@
 pragma solidity ^ 0.5 .0;
+import './SafeMath.sol';
+
 
 /** @title Q&A bounties */
 
 contract Bounty {
-    
+    using SafeMath for uint;
+
     /// @notice set up circuit breaker design pattern
     bool private stopped = false;
     address payable private owner;
@@ -188,7 +191,7 @@ contract Bounty {
 
         // award bounty to proposer, keep 10% fee to pay for transactions
         allQuestions[allAnswers[_id].questionId].bountyAmount = 0;
-        uint fee = (bountyAmount  * 10) / 100;
+        uint fee = (bountyAmount.mul(10)).div(100);
         uint amount = bountyAmount - fee;
         address(allAnswers[_id].proposer).transfer(amount);
         emit answerAccepted(allAnswers[_id].proposer);
