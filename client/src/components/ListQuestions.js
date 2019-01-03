@@ -1,15 +1,14 @@
 import React from 'react';
 import axios from 'axios';
-import AddAnswer from './AddAnswer';
-import GetAnswers from './GetAnswers';
-import ShortAddress from './ShortAddress';
+import QuestionCard from './QuestionCard';
 
 export default class ListQuestions extends React.Component {
   state = {
     questions: [],
     header: [],
     error: '',
-    loading: ''
+    loading: '',
+    toggleView: false
   };
 
   componentDidMount = () => {
@@ -24,69 +23,61 @@ export default class ListQuestions extends React.Component {
       .catch(err => console.log(err));
   };
 
+  toggleView = e => {
+    this.setState({ toggleView: !this.state.toggleView });
+  };
   render() {
-    const { questions } = this.state;
-    const { utils } = this.props;
+    const { questions, toggleView } = this.state;
+    const { utils, accounts, contract } = this.props;
+
+    let allQ;
+    if (toggleView) {
+      allQ = questions
+        .filter(question => question.funder === accounts[0])
+        .map(question => (
+          <QuestionCard
+            question={question}
+            utils={utils}
+            accounts={accounts}
+            contract={contract}
+          />
+        ));
+    } else {
+      allQ = questions.map(question => (
+        <QuestionCard
+          question={question}
+          utils={utils}
+          accounts={accounts}
+          contract={contract}
+        />
+      ));
+    }
 
     return (
       <React.Fragment>
-        <h3>Add navigation to show your questions only</h3>
-        <nav className="nav">
-          <a className="nav-link active" href="#">
-            Active
-          </a>
-          <a className="nav-link" href="#">
-            Link
-          </a>
-          <a className="nav-link" href="#">
-            Link
-          </a>
-          <a
-            className="nav-link disabled"
-            href="#"
-            tabIndex="-1"
-            aria-disabled="true"
-          >
-            Disabled
-          </a>
-        </nav>
-        {questions.map(question => {
-          var time = new Date(Number(question.submitDate));
-          return (
-            <div className="card mb-3" key={Math.random()}>
-              <div className="card-body">
-                <h5 className="card-title">{question.heading}</h5>
-                <p className="card-text">{question.description}</p>
-                <p className="card-text">Submitted: {String(time)}</p>
-                <p className="card-text">
-                  By: <ShortAddress account={question.funder} />
-                </p>
-                <p className="card-text">
-                  Bounty Amount: {utils.fromWei(question.bountyAmount)} Ether
-                </p>
-                <p className="card-text">
-                  Winner: <ShortAddress account={question.winner} />
-                </p>
-              </div>
-              <ul className="list-group list-group-flush">
-                <GetAnswers
-                  qId={question.id}
-                  account={this.props.accounts[0]}
-                  contract={this.props.contract}
-                />
-              </ul>
-              {question.closed ? null : (
-                <div className="card-body">
-                  <AddAnswer
-                    qId={question.id}
-                    account={this.props.accounts[0]}
-                    contract={this.props.contract}
-                  />
-                </div>
-              )}
-            </div>
-          );
-        })}
+        <ul className="nav nav-pills mb-3">
+          <li className="nav-item">
+            <input
+              type="button"
+              className={
+                this.state.toggleView ? 'btn nav-link ' : 'btn nav-link active'
+              }
+              value="All Qs"
+              onClick={this.toggleView}
+            />
+          </li>
+          <li className="nav-item">
+            <input
+              type="button"
+              className={
+                this.state.toggleView ? 'btn nav-link active' : 'btn nav-link '
+              }
+              value="Your Qs"
+              onClick={this.toggleView}
+            />
+          </li>
+        </ul>
+        {allQ}
       </React.Fragment>
     );
   }
