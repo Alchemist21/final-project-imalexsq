@@ -1,6 +1,7 @@
 import React from 'react';
 import axios from 'axios';
 import ActionButtons from './ActionButtons';
+import ShortAddress from './ShortAddress';
 
 export default class GetAnswers extends React.Component {
   constructor(props) {
@@ -29,7 +30,7 @@ export default class GetAnswers extends React.Component {
         {answers.map(answer => {
           return (
             <li key={Math.random()} className="list-group-item">
-              {answer.aDesc} by {answer.account} |{' '}
+              {answer.aDesc} by <ShortAddress account={answer.account} />{' '}
               {answer.closed ? null : (
                 <ActionButtons
                   qId={this.props.qId}

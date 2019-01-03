@@ -3,6 +3,7 @@ import BountyContract from './contracts/Bounty.json';
 import getWeb3 from './utils/getWeb3';
 import ListQuestions from './components/ListQuestions';
 import AddQuestion from './components/AddQuestion';
+import ShortAddress from './components/ShortAddress';
 
 import './App.css';
 
@@ -51,7 +52,9 @@ class App extends Component {
           <div className="col-lg pt-3">
             <h1>Cuora</h1>
             <p>Crypto Quora</p>
-            <p>Logged in as {accounts[0]}</p>
+            <p>
+              Logged in as <ShortAddress account={accounts[0]} />
+            </p>
             <ListQuestions
               accounts={accounts}
               contract={contract}
