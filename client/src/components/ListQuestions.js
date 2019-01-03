@@ -8,7 +8,7 @@ export default class ListQuestions extends React.Component {
     header: [],
     error: '',
     loading: '',
-    toggleView: false
+    toggleView: true
   };
 
   componentDidMount = () => {
