@@ -6,6 +6,8 @@ export default class AddAnswer extends React.Component {
     super(props);
     this.state = {
       aDesc: '',
+      loading: '',
+      disabled: false,
       success: ''
     };
   }
@@ -18,6 +20,7 @@ export default class AddAnswer extends React.Component {
   handleAnswerSubmit = async () => {
     const { aDesc } = this.state;
     const { contract, account, qId } = this.props;
+    this.setState({ loading: 'PLEASE WAIT...', disabled: true });
 
     let tx = await contract.methods
       .addAnswer(qId, aDesc)
@@ -37,11 +40,15 @@ export default class AddAnswer extends React.Component {
         closed: accepted
       })
       .then(res => {
-        console.log(res.data);
+        this.setState({
+          aDesc: '',
+          success: 'Answer Added!',
+          loading: '',
+          disabled: false
+        });
       })
       .catch(err => console.log(err));
-
-    this.setState({ aDesc: '', success: 'Answer Added!' });
+    this.setState({ loading: '', disabled: false });
   };
 
   render() {
@@ -61,6 +68,7 @@ export default class AddAnswer extends React.Component {
               className="btn btn-outline-secondary"
               type="button"
               id="button-submit"
+              disabled={this.state.disabled}
               onClick={this.handleAnswerSubmit}
             >
               Button
@@ -68,6 +76,7 @@ export default class AddAnswer extends React.Component {
           </div>
         </div>
         <br />
+        {this.state.loading}
         {this.state.success}
       </React.Fragment>
     );

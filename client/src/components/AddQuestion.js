@@ -6,6 +6,8 @@ export default class AddQuestion extends React.Component {
     qHeading: '',
     qDesc: '',
     bAmount: '',
+    loading: '',
+    disabled: false,
     success: ''
   };
 
@@ -17,22 +19,17 @@ export default class AddQuestion extends React.Component {
   handleQuestionSubmit = async () => {
     const { qHeading, qDesc, bAmount } = this.state;
     const { account, contract, utils } = this.props;
+    this.setState({ loading: 'PLEASE WAIT...', disabled: true });
 
     let tx = await contract.methods.addQuestion(qHeading, qDesc).send({
       from: account,
       value: utils.toWei(bAmount)
     });
 
-    this.setState({
-      qHeading: '',
-      qDesc: '',
-      bAmount: '',
-      success: 'Question Added!'
-    });
-
     let qId = tx.events.questionAdded.returnValues.questionCount;
 
     const result = await contract.methods.getQuestion(qId).call();
+
     const {
       bountyAmount,
       description,
@@ -54,9 +51,17 @@ export default class AddQuestion extends React.Component {
         winner
       })
       .then(res => {
-        console.log(res.data);
+        this.setState({
+          qHeading: '',
+          qDesc: '',
+          bAmount: '',
+          success: 'Question Added!',
+          loading: '',
+          disabled: false
+        });
       })
       .catch(e => console.log(e));
+    this.setState({ loading: '', disabled: false });
   };
 
   render() {
@@ -105,9 +110,11 @@ export default class AddQuestion extends React.Component {
             className="btn btn-primary"
             onClick={this.handleQuestionSubmit}
             type="button"
+            disabled={this.state.disabled}
             value="Submit Question"
           />
           <br />
+          {this.state.loading}
           {this.state.success}
         </div>
       </React.Fragment>
