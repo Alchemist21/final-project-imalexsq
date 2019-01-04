@@ -1,0 +1,7 @@
+- Using transfer() to prevent re-entrancy attacks
+- Functions are easy-to-read and properly documented
+- Limiting user input and letting contract handle transfer.
+- Circuit Breaker to turn on/off the contract functionality
+- Access restriction with modifiers is used to prevent unauthorized operations
+- Using a set pragma version
+- using timestamps only for information, no functions depend on time
