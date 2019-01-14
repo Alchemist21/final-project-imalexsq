@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 
 export default class ActionButtons extends React.Component {
   constructor(props) {
@@ -12,30 +11,24 @@ export default class ActionButtons extends React.Component {
   }
 
   handleAnswerAccept = async e => {
-    const { aId, qId, contract, account } = this.props;
-    this.setState({ loading: 'PLEASE WAIT...', disabled: true });
+    const { aId, contract, account } = this.props;
 
-    let tx = await contract.methods.acceptAnswer(aId).send({
-      from: account
-    });
+    try {
+      this.setState({ loading: 'PLEASE WAIT...', disabled: true });
 
-    let winner = tx.events.answerAccepted.returnValues.winner;
+      await contract.methods.acceptAnswer(aId).send({
+        from: account
+      });
 
-    axios
-      .post('http://127.0.0.1:8080/acceptAnswer', {
-        aId,
-        qId,
-        winner
-      })
-      .then(res => {
-        this.setState({
-          disabled: false,
-          success: 'Winning answer selected!',
-          loading: ''
-        });
-      })
-      .catch(e => console.log(e));
-    this.setState({ loading: '', disabled: false });
+      this.setState({
+        loading: '',
+        disabled: true,
+        success: 'Winning answer selected!'
+      });
+      window.location.reload();
+    } catch (err) {
+      this.setState({ loading: err, disabled: false });
+    }
   };
 
   render() {

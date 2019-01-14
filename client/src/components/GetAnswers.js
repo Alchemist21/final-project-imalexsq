@@ -39,7 +39,7 @@ export default class GetAnswers extends React.Component {
                 {answer.accepted ? null : (
                   <ActionButtons
                     qId={this.props.qId}
-                    aId={answer.aId}
+                    aId={answer.id}
                     account={this.props.account}
                     contract={this.props.contract}
                   />
