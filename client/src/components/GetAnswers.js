@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 import ActionButtons from './ActionButtons';
 import ShortAddress from './ShortAddress';
 
@@ -11,15 +10,18 @@ export default class GetAnswers extends React.Component {
     };
   }
 
-  componentDidMount = () => {
-    axios
-      .post('http://127.0.0.1:8080/getAnswers', {
-        qId: this.props.qId
-      })
-      .then(res => {
-        this.setState({ answers: res.data });
-      })
-      .catch(err => console.log(err));
+  componentDidMount = async () => {
+    let ev = await this.props.contract.getPastEvents('answerAdded', {
+      fromBlock: 0,
+      toBlock: 'latest'
+    });
+
+    ev.map(async a => {
+      let res = await this.props.contract.methods
+        .getAnswer(a.returnValues[0])
+        .call();
+      this.setState({ answers: [...this.state.answers, res] });
+    });
   };
 
   render() {
@@ -27,21 +29,24 @@ export default class GetAnswers extends React.Component {
 
     return (
       <React.Fragment>
-        {answers.map(answer => {
-          return (
-            <li key={Math.random()} className="list-group-item">
-              {answer.aDesc} by <ShortAddress account={answer.account} />{' '}
-              {answer.closed ? null : (
-                <ActionButtons
-                  qId={this.props.qId}
-                  aId={answer.aId}
-                  account={this.props.account}
-                  contract={this.props.contract}
-                />
-              )}
-            </li>
-          );
-        })}
+        {answers
+          .filter(a => a.id === this.props.qId)
+          .map(answer => {
+            return (
+              <li key={Math.random()} className="list-group-item">
+                {answer.description} by{' '}
+                <ShortAddress account={answer.proposer} />{' '}
+                {answer.accepted ? null : (
+                  <ActionButtons
+                    qId={this.props.qId}
+                    aId={answer.aId}
+                    account={this.props.account}
+                    contract={this.props.contract}
+                  />
+                )}
+              </li>
+            );
+          })}
       </React.Fragment>
     );
   }

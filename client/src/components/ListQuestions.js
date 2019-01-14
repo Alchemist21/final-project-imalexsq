@@ -20,7 +20,6 @@ export default class ListQuestions extends React.Component {
       let res = await this.props.contract.methods
         .getQuestion(q.returnValues[0])
         .call();
-      console.log(res);
       this.setState({ questions: [...this.state.questions, res] });
     });
   };
