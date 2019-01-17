@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 
 export default class AddQuestion extends React.Component {
   state = {
@@ -21,46 +20,11 @@ export default class AddQuestion extends React.Component {
     const { account, contract, utils } = this.props;
     this.setState({ loading: 'PLEASE WAIT...', disabled: true });
 
-    let tx = await contract.methods.addQuestion(qHeading, qDesc).send({
+    await contract.methods.addQuestion(qHeading, qDesc).send({
       from: account,
       value: utils.toWei(bAmount)
     });
 
-    let qId = tx.events.questionAdded.returnValues.questionCount;
-
-    const result = await contract.methods.getQuestion(qId).call();
-
-    const {
-      bountyAmount,
-      description,
-      funder,
-      heading,
-      id,
-      submitDate,
-      winner
-    } = result;
-
-    axios
-      .post('http://127.0.0.1:8080/addQuestion', {
-        bountyAmount,
-        description,
-        funder,
-        heading,
-        id,
-        submitDate,
-        winner
-      })
-      .then(res => {
-        this.setState({
-          qHeading: '',
-          qDesc: '',
-          bAmount: '',
-          success: 'Question Added!',
-          loading: '',
-          disabled: false
-        });
-      })
-      .catch(e => console.log(e));
     this.setState({ loading: '', disabled: false });
   };
 
