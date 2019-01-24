@@ -87,7 +87,7 @@ contract('Bounty', function(accounts) {
       'adding a question should emit a answerAdded event'
     );
     assert.equal(result[2], description, 'answer should match');
-    assert.equal(result[4], dusty, 'answer submitted by dusty');
+    assert.equal(result[5], dusty, 'answer submitted by dusty');
   });
 
   it('should add a second answer', async () => {
@@ -111,7 +111,7 @@ contract('Bounty', function(accounts) {
       'adding a question should emit a answerAdded event'
     );
     assert.equal(result[2], description, 'answer should match');
-    assert.equal(result[4], frank, 'answer submitted by frank');
+    assert.equal(result[5], frank, 'answer submitted by frank');
   });
 
   it('should accept the 1st answer', async () => {
@@ -127,22 +127,21 @@ contract('Bounty', function(accounts) {
     }
     const result = await bounty.getAnswer.call(0);
     var dustyBalanceAfter = await web3.eth.getBalance(dusty);
-    console.log(result);
 
     assert.equal(
       eventEmitted,
       true,
       'accepting a question should emit an answerAccepted event'
     );
-    assert.equal(result[4], dusty, 'dusty gets awarded the bounty');
-    assert.equal(result[4], true, 'answer is accepted');
+    assert.equal(result[5], dusty, 'dusty gets awarded the bounty');
+    assert.equal(result[4].toString(), 2, 'answer is accepted');
     assert.equal(
       parseInt(dustyBalanceAfter),
       parseInt(dustyBalanceBefore, 10) + parseInt(bountyAmount, 10),
       'dusty receives the bounty'
     );
   });
-  /*
+
   it('should show 10% added to contract balance + 2nd question bounty', async () => {
     const bounty = await Bounty.deployed();
 
@@ -153,5 +152,5 @@ contract('Bounty', function(accounts) {
       100 + (bountyAmount * 10) / 100,
       'keeps 10% + 2nd question bounty'
     );
-  }); */
+  });
 });

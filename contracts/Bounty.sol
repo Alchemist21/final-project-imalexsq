@@ -165,15 +165,17 @@ contract Bounty {
         uint questionId,
         string memory description,
         uint submitDate,
+        State _state,
         address proposer
     ) {
         id = allAnswers[_id].id;
         questionId = allAnswers[_id].questionId;
         description = allAnswers[_id].description;
         submitDate = allAnswers[_id].submitDate;
+        _state = allAnswers[_id].state;
         proposer = allAnswers[_id].proposer;
 
-        return (id, questionId, description, submitDate, proposer);
+        return (id, questionId, description, submitDate, _state, proposer);
     }
 
     /// @notice question funder accepts one answer and the bounty is sent to the answer proposer
