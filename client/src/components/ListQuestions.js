@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 import QuestionCard from './QuestionCard';
 
 export default class ListQuestions extends React.Component {
@@ -11,21 +10,24 @@ export default class ListQuestions extends React.Component {
     toggleView: false
   };
 
-  componentDidMount = () => {
-    axios
-      .get('http://127.0.0.1:8080/allQuestions')
-      .then(res => {
-        if (res.data.length !== 0) {
-          const header = Object.keys(res.data[0]);
-          this.setState({ questions: res.data, header });
-        }
-      })
-      .catch(err => console.log(err));
+  componentDidMount = async () => {
+    let ev = await this.props.contract.getPastEvents('questionAdded', {
+      fromBlock: 0,
+      toBlock: 'latest'
+    });
+
+    ev.map(async q => {
+      let res = await this.props.contract.methods
+        .allQuestions(q.returnValues[0])
+        .call();
+      this.setState({ questions: [...this.state.questions, res] });
+    });
   };
 
   toggleView = e => {
     this.setState({ toggleView: !this.state.toggleView });
   };
+
   render() {
     const { questions, toggleView } = this.state;
     const { utils, accounts, contract } = this.props;
@@ -34,17 +36,21 @@ export default class ListQuestions extends React.Component {
     if (toggleView) {
       allQ = questions
         .filter(question => question.funder === accounts[0])
-        .map(question => (
-          <QuestionCard
-            question={question}
-            utils={utils}
-            accounts={accounts}
-            contract={contract}
-          />
-        ));
+        .map(question => {
+          return (
+            <QuestionCard
+              key={Math.random()}
+              question={question}
+              utils={utils}
+              accounts={accounts}
+              contract={contract}
+            />
+          );
+        });
     } else {
       allQ = questions.map(question => (
         <QuestionCard
+          key={Math.random()}
           question={question}
           utils={utils}
           accounts={accounts}
