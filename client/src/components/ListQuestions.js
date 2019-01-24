@@ -18,7 +18,7 @@ export default class ListQuestions extends React.Component {
 
     ev.map(async q => {
       let res = await this.props.contract.methods
-        .getQuestion(q.returnValues[0])
+        .allQuestions(q.returnValues[0])
         .call();
       this.setState({ questions: [...this.state.questions, res] });
     });

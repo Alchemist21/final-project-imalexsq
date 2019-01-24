@@ -18,7 +18,7 @@ export default class GetAnswers extends React.Component {
 
     ev.map(async a => {
       let res = await this.props.contract.methods
-        .getAnswer(a.returnValues[0])
+        .allAnswers(a.returnValues[0])
         .call();
       this.setState({ answers: [...this.state.answers, res] });
     });
@@ -26,28 +26,44 @@ export default class GetAnswers extends React.Component {
 
   render() {
     const { answers } = this.state;
+    const { id, state } = this.props.question;
 
-    return (
-      <React.Fragment>
-        {answers
-          .filter(a => a.id === this.props.qId)
-          .map(answer => {
-            return (
-              <li key={Math.random()} className="list-group-item">
-                {answer.description} by{' '}
-                <ShortAddress account={answer.proposer} />{' '}
-                {answer.accepted ? null : (
+    if (state === '0') {
+      return (
+        <React.Fragment>
+          {answers
+            .filter(a => a.questionId === id)
+            .map(answer => {
+              return (
+                <li key={Math.random()} className="list-group-item">
+                  {answer.description} by{' '}
+                  <ShortAddress account={answer.proposer} />{' '}
                   <ActionButtons
-                    qId={this.props.qId}
+                    qId={id}
                     aId={answer.id}
                     account={this.props.account}
                     contract={this.props.contract}
                   />
-                )}
-              </li>
-            );
-          })}
-      </React.Fragment>
-    );
+                </li>
+              );
+            })}
+        </React.Fragment>
+      );
+    } else {
+      return (
+        <React.Fragment>
+          {answers
+            .filter(a => a.questionId === id)
+            .map(answer => {
+              return (
+                <li key={Math.random()} className="list-group-item">
+                  {answer.description} by{' '}
+                  <ShortAddress account={answer.proposer} />{' '}
+                </li>
+              );
+            })}
+        </React.Fragment>
+      );
+    }
   }
 }

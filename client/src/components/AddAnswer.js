@@ -34,6 +34,7 @@ export default class AddAnswer extends React.Component {
       aDesc: '',
       success: 'Answer Added!'
     });
+    window.location.reload();
   };
 
   render() {

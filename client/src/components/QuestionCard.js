@@ -7,6 +7,22 @@ import ShortAddress from './ShortAddress';
 const QuestionCard = ({ question, utils, accounts, contract }) => {
   var time = new Date(Number(question.submitDate));
 
+  let isQClosed;
+
+  if (question.state === '0') {
+    isQClosed = (
+      <React.Fragment>
+        <div className="card-body">
+          <AddAnswer
+            qId={question.id}
+            account={accounts[0]}
+            contract={contract}
+          />
+        </div>
+      </React.Fragment>
+    );
+  }
+
   return (
     <div className="card mb-3" key={Math.random()}>
       <div className="card-body">
@@ -25,20 +41,12 @@ const QuestionCard = ({ question, utils, accounts, contract }) => {
       </div>
       <ul className="list-group list-group-flush">
         <GetAnswers
-          qId={question.id}
+          question={question}
           account={accounts[0]}
           contract={contract}
         />
       </ul>
-      {question.closed ? null : (
-        <div className="card-body">
-          <AddAnswer
-            qId={question.id}
-            account={accounts[0]}
-            contract={contract}
-          />
-        </div>
-      )}
+      {isQClosed}
     </div>
   );
 };

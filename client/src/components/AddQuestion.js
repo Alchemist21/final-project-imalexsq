@@ -25,7 +25,15 @@ export default class AddQuestion extends React.Component {
       value: utils.toWei(bAmount)
     });
 
-    this.setState({ loading: '', disabled: false });
+    this.setState({
+      loading: '',
+      disabled: false,
+      qHeading: '',
+      qDesc: '',
+      bAmount: '',
+      success: 'Success'
+    });
+    window.location.reload();
   };
 
   render() {

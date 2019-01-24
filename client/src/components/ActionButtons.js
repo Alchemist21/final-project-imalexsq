@@ -27,7 +27,7 @@ export default class ActionButtons extends React.Component {
       });
       window.location.reload();
     } catch (err) {
-      this.setState({ loading: err, disabled: false });
+      this.setState({ loading: String(err), disabled: false });
     }
   };
 
