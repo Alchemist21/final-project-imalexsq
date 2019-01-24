@@ -16,20 +16,18 @@ Requires Truffle, Ganache MetaMask
 npm install -g truffle
 npm install -g ganache-cli
 
-```
-
 git clone https://github.com/dev-bootcamp-2019/final-project-imalexsq
 
 cd final-project-imalexsq && npm install
 
-cd ../client && npm install
+cd /client && npm install
 
 ```
 
-Open Ganache
 From the main directory /final-project-imalexsq:
 
 ```
+ganache-cli
 
 truffle compile --all
 
@@ -37,15 +35,12 @@ truffle migrate --reset
 
 ```
 
-
 Start the React dev server
 
 ```
 
-cd ../client
+cd /client
 
 npm start
-
-```
 
 ```
