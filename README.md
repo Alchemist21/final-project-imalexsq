@@ -8,9 +8,9 @@ A Question & Answer dApp that allows anyone to post a question and set a bounty 
 
 The bounty amount is held in escrow by the contract until the question funder selects one answer.
 
-## Quick Start
+## Quick Start on localhost
 
-Requires Truffle, Ganache MetaMask
+Requires Truffle, Ganache, MetaMask
 
 ```
 npm install -g truffle
@@ -44,3 +44,17 @@ cd /client
 npm start
 
 ```
+
+## Test on Ropsten
+
+Requires Metamask
+
+```
+git clone https://github.com/dev-bootcamp-2019/final-project-imalexsq
+
+cd final-project-imalexsq && npm install
+
+cd /client && npm install && npm start
+```
+
+Open browser to http://localhost:3000/, set Metamask network to Ropsten. You should see at least one question on the page.
