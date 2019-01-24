@@ -134,7 +134,7 @@ contract('Bounty', function(accounts) {
       'accepting a question should emit an answerAccepted event'
     );
     assert.equal(result[5], dusty, 'dusty gets awarded the bounty');
-    assert.equal(result[4], true, 'answer is accepted');
+    assert.equal(result[4].toString(), 2, 'answer is accepted');
     assert.equal(
       parseInt(dustyBalanceAfter),
       parseInt(dustyBalanceBefore, 10) + parseInt(bountyAmount, 10),

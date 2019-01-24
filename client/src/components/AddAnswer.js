@@ -1,5 +1,4 @@
 import React from 'react';
-import axios from 'axios';
 
 export default class AddAnswer extends React.Component {
   constructor(props) {
@@ -27,28 +26,15 @@ export default class AddAnswer extends React.Component {
       .send({ from: account });
     let aId = tx.events.answerAdded.returnValues.id;
 
-    const result = await contract.methods.getAnswer(aId).call();
-    const { accepted, description, proposer, submitDate } = result;
+    await contract.methods.getAnswer(aId).call();
 
-    axios
-      .post('http://127.0.0.1:8080/addAnswer', {
-        qId,
-        aId,
-        aDesc: description,
-        account: proposer,
-        submitDate,
-        closed: accepted
-      })
-      .then(res => {
-        this.setState({
-          aDesc: '',
-          success: 'Answer Added!',
-          loading: '',
-          disabled: false
-        });
-      })
-      .catch(err => console.log(err));
-    this.setState({ loading: '', disabled: false });
+    this.setState({
+      loading: '',
+      disabled: false,
+      aDesc: '',
+      success: 'Answer Added!'
+    });
+    window.location.reload();
   };
 
   render() {

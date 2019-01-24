@@ -13,7 +13,9 @@ contract Bounty {
     
     uint public questionCount;
     uint public answerCount;
-
+    enum State {  Open, Closed, Selected }
+    State public state;
+    
     constructor() payable public {
         owner = msg.sender;
         questionCount = 0;
@@ -24,12 +26,14 @@ contract Bounty {
     mapping(uint => Question) public allQuestions;
     mapping(uint => Answer) public allAnswers;
 
+
     struct Question {
         uint id;
         string heading;
         string description;
         uint submitDate;
         uint bountyAmount;
+        State state;
         address payable funder;
         address winner;
     }
@@ -39,7 +43,7 @@ contract Bounty {
         uint questionId;
         string description;
         uint submitDate;
-        bool accepted;
+        State state;
         address payable proposer;
     }
     
@@ -50,7 +54,8 @@ contract Bounty {
 
     /// @dev modifier, verifies the the caller is the question funder
     modifier isQuestionFunder(uint _id) {
-        require(msg.sender == allQuestions[allAnswers[_id].questionId].funder, "Not question funder");_;
+        require(msg.sender == allQuestions[allAnswers[_id].questionId].funder, "Not question funder");
+        _;
     }
 
     /// @dev modifier, verifies that caller is contract owner
@@ -92,6 +97,7 @@ contract Bounty {
             description: _description,
             submitDate: now,
             bountyAmount: msg.value,
+            state: State.Open,
             funder: msg.sender,
             winner: address(0)
         });
@@ -109,14 +115,16 @@ contract Bounty {
     /// @param _description long description of the answer
     /// @return true and the current answer count
     function addAnswer(uint _questionId, string memory _description) stopInEmergency public returns(bool) {
-
+        
+        //Check that question is open
+        require(allQuestions[_questionId].state == State.Open, "Question has been answered");
         // add new answer to mapping using current answerCount as index
         allAnswers[answerCount] = Answer({
             id: answerCount,
             questionId: _questionId,
             description: _description,
             submitDate: now,
-            accepted: false,
+            state: State.Open,
             proposer: msg.sender
         });
 
@@ -157,17 +165,17 @@ contract Bounty {
         uint questionId,
         string memory description,
         uint submitDate,
-        bool accepted,
+        State _state,
         address proposer
     ) {
         id = allAnswers[_id].id;
         questionId = allAnswers[_id].questionId;
         description = allAnswers[_id].description;
         submitDate = allAnswers[_id].submitDate;
-        accepted = allAnswers[_id].accepted;
+        _state = allAnswers[_id].state;
         proposer = allAnswers[_id].proposer;
 
-        return (id, questionId, description, submitDate, accepted, proposer);
+        return (id, questionId, description, submitDate, _state, proposer);
     }
 
     /// @notice question funder accepts one answer and the bounty is sent to the answer proposer
@@ -177,11 +185,14 @@ contract Bounty {
     function acceptAnswer(uint _id) isQuestionFunder(_id) stopInEmergency public returns(
         bool) {
         // check that a question is unanswered and no answers tied to that question have been accepted
-        require(allAnswers[_id].accepted != true, "Answer already accepted");
+        require(allAnswers[_id].state == State.Open, "Answer already accepted");
         require(allQuestions[allAnswers[_id].questionId].winner == address(0), "Question has been answered");
         
-        // flip answer to true
-        allAnswers[_id].accepted = true;
+        // set Answer status to Selected
+        allAnswers[_id].state = State.Selected;
+        
+        // set Question to Closed
+        allQuestions[allAnswers[_id].questionId].state = State.Closed;
 
         // get question bounty amount
         uint bountyAmount = allQuestions[allAnswers[_id].questionId].bountyAmount;
