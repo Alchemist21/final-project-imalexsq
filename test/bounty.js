@@ -9,6 +9,7 @@ contract('Bounty', function(accounts) {
   var id;
   const bountyAmount = '100';
 
+  // Create a sample question and check the proper information is saved to the blockchain
   it('should add a first question', async () => {
     const bounty = await Bounty.deployed();
 
@@ -38,6 +39,7 @@ contract('Bounty', function(accounts) {
     assert.equal(result[5], billy, 'question submitted by billy');
   });
 
+  // Add a second question and check the proper ID is added and the rest of the information is properly saved to the blockchain
   it('should add a second question', async () => {
     const bounty = await Bounty.deployed();
 
@@ -67,6 +69,7 @@ contract('Bounty', function(accounts) {
     assert.equal(result[5], frank, 'question submitted by frank');
   });
 
+  // Add first answer from another account to the first question and check information is saved properly
   it('should add an answer to an existing question', async () => {
     const bounty = await Bounty.deployed();
 
@@ -90,6 +93,7 @@ contract('Bounty', function(accounts) {
     assert.equal(result[5], dusty, 'answer submitted by dusty');
   });
 
+  // Add a second answer to the first question from a different account
   it('should add a second answer', async () => {
     const bounty = await Bounty.deployed();
 
@@ -114,6 +118,7 @@ contract('Bounty', function(accounts) {
     assert.equal(result[5], frank, 'answer submitted by frank');
   });
 
+  // Test question funder can accept an answer and the bounty is awarded properly
   it('should accept the 1st answer', async () => {
     const bounty = await Bounty.deployed();
 
@@ -142,6 +147,7 @@ contract('Bounty', function(accounts) {
     );
   });
 
+  // Check that 10% is kept in the contract to fund further operations
   it('should show 10% added to contract balance + 2nd question bounty', async () => {
     const bounty = await Bounty.deployed();
 
